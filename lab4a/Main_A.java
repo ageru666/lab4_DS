@@ -196,7 +196,7 @@ class NameToPhoneNumberFinderThread extends Thread {
     public void run() {
         String phoneNumber = database.findPhoneNumber(name);
         if (phoneNumber != null) {
-            System.out.println("Phone number for " + name + ": " + phoneNumber);
+            System.out.println("Find for phone number for " + name + ": " + phoneNumber);
         } else {
             System.out.println("No phone number found for " + name);
         }
@@ -207,10 +207,9 @@ public class Main_A {
     public static void main(String[] args) {
         Database database = new Database();
 
-        database.addOrUpdateEntry("Smith", "555-1111");
-        database.addOrUpdateEntry("Johnson", "555-2222");
-        database.addOrUpdateEntry("Jean", "555-3333");
-        database.addOrUpdateEntry("Brown", "555-4444");
+       database.addOrUpdateEntry("Smith", "555-1111");
+       database.addOrUpdateEntry("Johnson", "555-2222");
+
 
         ReaderThread reader1 = new ReaderThread(database, "Smith");
         ReaderThread reader2 = new ReaderThread(database, "Johnson");
@@ -218,7 +217,7 @@ public class Main_A {
         WriterThread writer1 = new WriterThread(database, "Jean", "555-1234");
         WriterThread writer2 = new WriterThread(database, "Brown", "555-5678");
 
-        PhoneNumberFinderThread finder1 = new PhoneNumberFinderThread(database, "555-1111");
+        PhoneNumberFinderThread finder1 = new PhoneNumberFinderThread(database, "555-1234");
 
         NameToPhoneNumberFinderThread finder2 = new NameToPhoneNumberFinderThread(database, "Smith");
 
