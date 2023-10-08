@@ -203,13 +203,28 @@ class NameToPhoneNumberFinderThread extends Thread {
     }
 }
 
+class DeleteThread extends Thread {
+    private final Database database;
+    private final String name;
+
+    public DeleteThread(Database database, String name) {
+        this.database = database;
+        this.name = name;
+    }
+
+    @Override
+    public void run() {
+        database.deleteEntry(name);
+        System.out.println("Deleted entry for: " + name);
+    }
+}
+
 public class Main_A {
     public static void main(String[] args) {
         Database database = new Database();
 
-       database.addOrUpdateEntry("Smith", "555-1111");
-       database.addOrUpdateEntry("Johnson", "555-2222");
-
+        database.addOrUpdateEntry("Smith", "555-1111");
+        database.addOrUpdateEntry("Johnson", "555-2222");
 
         ReaderThread reader1 = new ReaderThread(database, "Smith");
         ReaderThread reader2 = new ReaderThread(database, "Johnson");
@@ -218,17 +233,17 @@ public class Main_A {
         WriterThread writer2 = new WriterThread(database, "Brown", "555-5678");
 
         PhoneNumberFinderThread finder1 = new PhoneNumberFinderThread(database, "555-1234");
-
         NameToPhoneNumberFinderThread finder2 = new NameToPhoneNumberFinderThread(database, "Smith");
+
+        DeleteThread deleteThread = new DeleteThread(database, "Johnson"); // Example of using deleteEntry
 
         reader1.start();
         reader2.start();
         writer1.start();
         writer2.start();
-
         finder1.start();
-
         finder2.start();
+        deleteThread.start();
 
         try {
             reader1.join();
@@ -237,8 +252,10 @@ public class Main_A {
             writer2.join();
             finder1.join();
             finder2.join();
+            deleteThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 }
+
